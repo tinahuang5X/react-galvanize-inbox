@@ -14,14 +14,15 @@ export default function InboxPage({
   return (
     <div id={id} className="InboxPage">
       <InboxPageLayout>
-        <ComposeFormComponent />
-        <MessagesComponent
-          messages={messages}
-          selectedMessageIds={selectedMessageIds}
-        />
         <ToolBarComponent
           messages={messages}
           selectedMsgCount={selectedMsgCount}
+        />
+        <ComposeFormComponent />
+
+        <MessagesComponent
+          messages={messages}
+          selectedMessageIds={selectedMessageIds}
         />
       </InboxPageLayout>
     </div>

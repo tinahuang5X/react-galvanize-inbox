@@ -74,11 +74,12 @@ let showComposeForm = true;
 storiesOf('OrderPageLayout', module)
   .add('Compose Form', () =>
     <InboxPageLayout>
-      {showComposeForm && <ComposeFormComponent />}
       <ToolBarComponent
         messages={messages}
         selectedMessageCount={selectedMessageIds.length}
       />
+
+      {showComposeForm && <ComposeFormComponent />}
 
       <MessagesComponent
         messages={messages}
@@ -88,11 +89,12 @@ storiesOf('OrderPageLayout', module)
   )
   .add('No Compose Form', () =>
     <InboxPageLayout>
-      {showComposeForm === false && <ComposeFormComponent />}
       <ToolBarComponent
         messages={messages}
         selectedMessageCount={selectedMessageIds.length}
       />
+
+      {showComposeForm === false && <ComposeFormComponent />}
 
       <MessagesComponent
         messages={messages}
