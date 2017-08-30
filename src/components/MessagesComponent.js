@@ -1,7 +1,16 @@
 import React from 'react';
 
 import MessageComponent from './MessageComponent';
-export default function MessagesComponent({ messages, selectedMessageIds }) {
+
+export default function MessagesComponent({
+  messages,
+  selectedMessageIds,
+  onMarkAsReadMessage,
+  onSelectMessage,
+  onDeselectMessage,
+  onStarMessage,
+  onUnstarMessage
+}) {
   return (
     <div>
       {messages.map(message => {
@@ -18,6 +27,11 @@ export default function MessagesComponent({ messages, selectedMessageIds }) {
             selected={selected}
             message={message}
             key={message.id}
+            onMarkAsReadMessage={onMarkAsReadMessage}
+            onSelectMessage={onSelectMessage}
+            onDeselectMessage={onDeselectMessage}
+            onStarMessage={onStarMessage}
+            onUnstarMessage={onUnstarMessage}
           />
         );
       })}

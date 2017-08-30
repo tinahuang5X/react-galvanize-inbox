@@ -1,9 +1,21 @@
 import React from 'react';
 //import './index.css';
 
-export default function ToolBarComponent({ messages, selectedMsgCount }) {
+export default function ToolBarComponent({
+  messages,
+  selectedMsgCount,
+  onOpenComposeForm,
+  onSelectAllMessages,
+  onDeselectAllMessages,
+  onMarkAsReadSelectedMessages,
+  onMarkAsUnreadSelectedMessages,
+  onApplyLabelSelectedMessages,
+  onRemoveLabelSelectedMessages,
+  onDeleteSelectedMessages
+}) {
   let totalMsgCount = messages.length;
-  let unreadMsgCount = 2;
+  let readMsgCount = messages.filter(message => message.read).length;
+  let unreadMsgCount = totalMsgCount - readMsgCount;
 
   let selectAllButtonClass;
   if (selectedMsgCount === 0) {
@@ -12,6 +24,21 @@ export default function ToolBarComponent({ messages, selectedMsgCount }) {
     selectAllButtonClass = 'fa fa-check-square-o';
   } else {
     selectAllButtonClass = 'fa fa-minus-square-o';
+  }
+  function handleComposeForm(event) {
+    event.preventDefault();
+    onOpenComposeForm();
+  }
+  function handleSelect(event) {
+    event.preventDefault();
+    console.log('this function is running');
+    console.log('selectedCount', selectedMsgCount);
+    if (selectedMsgCount > 0 && selectedMsgCount < totalMsgCount) {
+      onSelectAllMessages();
+      console.log(selectedMsgCount, totalMsgCount);
+      // selectedMsgCount = totalMsgCount;
+    }
+    if (selectedMsgCount === totalMsgCount) onDeselectAllMessages();
   }
 
   return (
@@ -22,9 +49,9 @@ export default function ToolBarComponent({ messages, selectedMsgCount }) {
           unread messages
         </p>
         <a className="btn btn-danger">
-          <i className="fa fa-plus" />
+          <i className="fa fa-plus" onClick={handleComposeForm} />
         </a>
-        <button className="btn btn-default">
+        <button className="btn btn-default" onClick={handleSelect}>
           <i className={selectAllButtonClass} />
         </button>
         <button className="btn btn-default" disabled={selectedMsgCount === 0}>

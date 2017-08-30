@@ -1,7 +1,15 @@
 import React from 'react';
 //import './index.css';
 
-export default function ComposeFormComponent() {
+export default function ComposeFormComponent({ onSubmit, onCancel }) {
+  function handleCancel(event) {
+    event.preventDefault();
+    onCancel();
+  }
+
+  function handleSubmit(event) {
+    onSubmit();
+  }
   return (
     <form className="form-horizontal well">
       <div className="form-group">
@@ -42,8 +50,15 @@ export default function ComposeFormComponent() {
             defaultValue="Send"
             className="btn btn-primary"
             type="submit"
+            onClick={handleSubmit}
           />
         </div>
+        <input
+          type="reset"
+          value="Cancel"
+          className="btn btn-default"
+          onClick={handleCancel}
+        />
       </div>
     </form>
   );
