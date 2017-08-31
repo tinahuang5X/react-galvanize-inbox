@@ -40,6 +40,34 @@ export default function ToolBarComponent({
     }
     if (selectedMsgCount === totalMsgCount) onDeselectAllMessages();
   }
+  function handleMarkAsRead(event) {
+    event.preventDefault();
+    onMarkAsReadSelectedMessages();
+  }
+
+  function handleMarkAsUnread(event) {
+    event.preventDefault();
+    onMarkAsUnreadSelectedMessages();
+  }
+
+  function handleApplyLabel(event) {
+    event.preventDefault();
+    if (event.target.value !== 'Apply label')
+      onApplyLabelSelectedMessages(event.target.value);
+    event.target.value = 'Apply label';
+  }
+
+  function handleRemoveLabel(event) {
+    event.preventDefault();
+    if (event.target.value !== 'Remove label')
+      onRemoveLabelSelectedMessages(event.target.value);
+    event.target.value = 'Remove label';
+  }
+
+  function handleDeleteSelected(event) {
+    event.preventDefault();
+    onDeleteSelectedMessages();
+  }
 
   return (
     <div className="row toolbar">
@@ -48,23 +76,30 @@ export default function ToolBarComponent({
           <span className="badge badge">{unreadMsgCount}</span>
           unread messages
         </p>
-        <a className="btn btn-danger">
-          <i className="fa fa-plus" onClick={handleComposeForm} />
+        <a className="btn btn-danger" onClick={handleComposeForm}>
+          <i className="fa fa-plus" />
         </a>
         <button className="btn btn-default" onClick={handleSelect}>
           <i className={selectAllButtonClass} />
         </button>
-        <button className="btn btn-default" disabled={selectedMsgCount === 0}>
+        <button
+          className="btn btn-default"
+          disabled={selectedMsgCount === 0}
+          onClick={handleMarkAsRead}>
           Mark As Read
         </button>
 
-        <button className="btn btn-default" disabled={selectedMsgCount === 0}>
+        <button
+          className="btn btn-default"
+          disabled={selectedMsgCount === 0}
+          onClick={handleMarkAsUnread}>
           Mark As Unread
         </button>
 
         <select
           className="form-control label-select"
-          disabled={selectedMsgCount === 0}>
+          disabled={selectedMsgCount === 0}
+          onChange={handleApplyLabel}>
           <option>Apply label</option>
           <option value="dev">dev</option>
           <option value="personal">personal</option>
@@ -73,13 +108,17 @@ export default function ToolBarComponent({
 
         <select
           className="form-control label-select"
-          disabled={selectedMsgCount === 0}>
+          disabled={selectedMsgCount === 0}
+          onChange={handleRemoveLabel}>
           <option>Remove label</option>
           <option value="dev">dev</option>
           <option value="personal">personal</option>
           <option value="gschool">gschool</option>
         </select>
-        <button className="btn btn-default" disabled={selectedMsgCount === 0}>
+        <button
+          className="btn btn-default"
+          disabled={selectedMsgCount === 0}
+          onClick={handleDeleteSelected}>
           <i className="fa fa-trash-o" />
         </button>
       </div>

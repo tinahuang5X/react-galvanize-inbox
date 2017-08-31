@@ -108,15 +108,45 @@ function onUnstarMessage(messageId) {
   render();
 }
 function onApplyLabelSelectedMessages(label) {
+  messages.forEach(message => {
+    if (
+      selectedMessageIds.includes(message.id) &&
+      !message.labels.includes(label)
+    ) {
+      message.labels.push(label);
+    }
+  });
   render();
 }
 function onRemoveLabelSelectedMessages(label) {
+  messages.forEach(message => {
+    if (selectedMessageIds.includes(message.id)) {
+      message.labels.forEach(selectedLabel => {
+        if (label === selectedLabel) {
+          message.labels.splice(message.labels.indexOf(label), 1);
+        }
+      });
+    }
+  });
   render();
 }
-function onComposeFormSubmit({ subject, body }) {
+function onSubmit(subject, body) {
+  let newMessage = {
+    id: 0,
+    read: false,
+    starred: false,
+    labels: ['new']
+  };
+  newMessage.id = messages[messages.length - 1].id + 1;
+  newMessage.subject = 'Hello!';
+  newMessage.body = 'How are you?';
+  messages.push(newMessage);
+  showComposeForm = false;
   render();
 }
-function onComposeFormCancel() {
+
+function onCancel() {
+  showComposeForm = false;
   render();
 }
 function onOpenComposeForm() {
@@ -124,16 +154,13 @@ function onOpenComposeForm() {
   render();
 }
 function onSelectAllMessages() {
-  selectedMessageIds = [];
+  /*selectedMessageIds = [];
   for (let message of messages) {
-    // if (message.id !== selectedMessageId) {
     selectedMessageIds.push(message.id);
   }
-  // }
   console.log(selectedMessageIds);
-  //if (selectedMessageIds.length > messages.length)
-  //selectedMessageIds.length = messages.length;
-
+  */
+  selectedMessageIds = messages.map(message => message.id);
   render();
 }
 
@@ -143,12 +170,28 @@ function onDeselectAllMessages() {
   render();
 }
 function onMarkAsReadSelectedMessages() {
+  messages.forEach(message => {
+    if (selectedMessageIds.includes(message.id)) {
+      message.read = true;
+    }
+  });
+
   render();
 }
+
 function onMarkAsUnreadSelectedMessages() {
+  messages.forEach(message => {
+    if (selectedMessageIds.includes(message.id)) {
+      message.read = false;
+    }
+  });
   render();
 }
 function onDeleteSelectedMessages() {
+  for (let message of messages) {
+    if (selectedMessageIds.includes(message.id))
+      messages.splice(messages.indexOf(message), 1);
+  }
   render();
 }
 
@@ -171,8 +214,8 @@ function render() {
       onDeselectMessage={onDeselectMessage}
       onStarMessage={onStarMessage}
       onUnstarMessage={onUnstarMessage}
-      onSubmit={onComposeFormSubmit}
-      onCancel={onComposeFormCancel}
+      onSubmit={onSubmit}
+      onCancel={onCancel}
     />,
     document.getElementById('root')
   );
