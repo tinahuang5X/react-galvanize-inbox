@@ -133,13 +133,12 @@ function onRemoveLabelSelectedMessages(label) {
 function onSubmit(subject, body) {
   let newMessage = {
     id: 0,
+    subject: subject,
     read: false,
     starred: false,
     labels: ['new']
   };
   newMessage.id = messages[messages.length - 1].id + 1;
-  newMessage.subject = 'Hello!';
-  newMessage.body = 'How are you?';
   messages.push(newMessage);
   showComposeForm = false;
   render();

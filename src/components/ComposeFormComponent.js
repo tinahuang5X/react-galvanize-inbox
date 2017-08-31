@@ -8,10 +8,22 @@ export default function ComposeFormComponent({ onSubmit, onCancel }) {
   }
 
   function handleSubmit(event) {
-    onSubmit();
+    event.preventDefault();
+    const $form = event.target;
+    //console.log($form);
+
+    //console.log('touched SUBMIT button');
+
+    const subject = $form.subject.value.trim();
+    const body = $form.body.value.trim();
+    //console.log(subject);
+    //console.log(body);
+
+    onSubmit(subject, body);
   }
+
   return (
-    <form className="form-horizontal well">
+    <form className="form-horizontal well" onSubmit={handleSubmit}>
       <div className="form-group">
         <div className="col-sm-8 col-sm-offset-2">
           <h4>Compose Message</h4>
@@ -50,7 +62,6 @@ export default function ComposeFormComponent({ onSubmit, onCancel }) {
             defaultValue="Send"
             className="btn btn-primary"
             type="submit"
-            onClick={handleSubmit}
           />
         </div>
         <input
