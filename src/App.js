@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
 //import logo from './logo.svg';
-//import './App.css';
+import './App.css';
 import InboxPage from './components/InboxPage';
 
 import getMessages from './api/updateMessage';
-
-//import getMenuItems from './requests/getMenuItems';
 
 //app = new App({});
 //element = app.render()
