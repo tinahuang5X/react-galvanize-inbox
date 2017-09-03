@@ -131,15 +131,19 @@ function onRemoveLabelSelectedMessages(label) {
   render();
 }
 function onSubmit(subject, body) {
-  let newMessage = {
+  let newMessage1 = {
     id: 0,
     subject: subject,
     read: false,
     starred: false,
     labels: ['new']
   };
-  newMessage.id = messages[messages.length - 1].id + 1;
-  messages.push(newMessage);
+  if (messages.length > 0) {
+    newMessage1.id = messages[messages.length - 1].id + 1;
+  } else {
+    newMessage1.id = 1;
+  }
+  messages.push(newMessage1);
   showComposeForm = false;
   render();
 }
@@ -186,11 +190,15 @@ function onMarkAsUnreadSelectedMessages() {
   });
   render();
 }
+
 function onDeleteSelectedMessages() {
-  for (let message of messages) {
-    if (selectedMessageIds.includes(message.id))
-      messages.splice(messages.indexOf(message), 1);
+  for (let i = 0; i < messages.length; i++) {
+    if (selectedMessageIds.includes(messages[i].id)) {
+      messages.splice(i, 1);
+      i = i - 1;
+    }
   }
+  selectedMessageIds = [];
   render();
 }
 
