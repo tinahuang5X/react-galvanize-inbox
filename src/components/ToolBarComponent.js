@@ -32,14 +32,16 @@ export default function ToolBarComponent({
   function handleSelect(event) {
     event.preventDefault();
     console.log('this function is running');
-    console.log('selectedCount', selectedMsgCount);
+    console.log('selectedCount', selectedMsgCount, totalMsgCount);
     if (selectedMsgCount > 0 && selectedMsgCount < totalMsgCount) {
       onSelectAllMessages();
       console.log(selectedMsgCount, totalMsgCount);
-      // selectedMsgCount = totalMsgCount;
     }
-    if (selectedMsgCount === totalMsgCount) onDeselectAllMessages();
+    if (selectedMsgCount === totalMsgCount) {
+      onDeselectAllMessages();
+    }
   }
+
   function handleMarkAsRead(event) {
     event.preventDefault();
     onMarkAsReadSelectedMessages();
@@ -104,6 +106,8 @@ export default function ToolBarComponent({
           <option value="dev">dev</option>
           <option value="personal">personal</option>
           <option value="gschool">gschool</option>
+          <option value="sales">sales</option>
+          <option value="new">new</option>
         </select>
 
         <select
@@ -114,6 +118,8 @@ export default function ToolBarComponent({
           <option value="dev">dev</option>
           <option value="personal">personal</option>
           <option value="gschool">gschool</option>
+          <option value="sales">sales</option>
+          <option value="new">new</option>
         </select>
         <button
           className="btn btn-default"
