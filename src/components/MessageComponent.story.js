@@ -11,8 +11,8 @@ storiesOf('MessageComponent', module)
         subject:
           "You can't input the protocol without calculating the mobile RSS protocol!",
         read: false,
-        starred: true,
-        labels: ['dev', 'personal']
+        starred: false,
+        labels: []
       }}
     />
   )
@@ -23,9 +23,9 @@ storiesOf('MessageComponent', module)
         id: 1,
         subject:
           "You can't input the protocol without calculating the mobile RSS protocol!",
-        read: false,
-        starred: true,
-        labels: ['dev', 'personal']
+        read: true,
+        starred: false,
+        labels: []
       }}
     />
   )
@@ -38,7 +38,7 @@ storiesOf('MessageComponent', module)
           "You can't input the protocol without calculating the mobile RSS protocol!",
         read: false,
         starred: true,
-        labels: ['dev', 'personal']
+        labels: []
       }}
     />
   )
@@ -51,7 +51,7 @@ storiesOf('MessageComponent', module)
           "You can't input the protocol without calculating the mobile RSS protocol!",
         read: false,
         starred: true,
-        labels: ['dev', 'personal']
+        labels: []
       }}
     />
   )

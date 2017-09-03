@@ -2,9 +2,9 @@ import React from 'react';
 //import './index.css';
 
 function renderLabels(labels) {
-  return labels.map(label => {
+  return labels.map((label, labelKey) => {
     return (
-      <span className="label label-warning">
+      <span className="label label-warning" key={labelKey}>
         {label}
       </span>
     );
@@ -13,11 +13,11 @@ function renderLabels(labels) {
 
 export default function MessageComponent({ selected, message }) {
   const readClass = message.read ? 'read' : 'unread';
-  //const selectedClass = message.selected ? 'selected' : '';
+  const selectedClass = selected ? 'selected' : '';
   const starClass = message.starred ? 'star fa fa-star' : 'star fa fa-star-o';
 
   return (
-    <div className={`row message ${readClass}`}>
+    <div className={`row message ${readClass} ${selectedClass}`}>
       <div className="col-xs-1">
         <div className="row">
           <div className="col-xs-2">
