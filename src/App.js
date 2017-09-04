@@ -2,8 +2,10 @@ import React, { Component } from 'react';
 //import logo from './logo.svg';
 import './App.css';
 import InboxPage from './components/InboxPage';
-
-import getMessages from './api/updateMessage';
+import getMessages from './api/getMessages';
+import updateMessage from './api/updateMessage';
+import createMessage from './api/createMessage';
+import deleteMessage from './api/deleteMessage';
 
 //app = new App({});
 //element = app.render()
@@ -77,9 +79,9 @@ class App extends Component {
   //experimental syntax
   state = {
     messages: [],
-
     selectedMessageIds: [],
-    showComposeForm: false
+    showComposeForm: false,
+    showApiError: false
   };
 
   render() {
@@ -114,13 +116,16 @@ class App extends Component {
   }
 
   _markAsReadMessage = messageId => {
+    // updateMessage(messageId, { read: true }).then(() => {
     this.setState(prevState => {
       const newMessages = prevState.messages.slice(0);
       newMessages.filter(
         newMessage => newMessage.id === messageId
       )[0].read = true;
+      updateMessage(messageId, { read: true });
       return { messages: newMessages };
     });
+    //});
   };
 
   _selectMessage = messageId => {
@@ -140,22 +145,36 @@ class App extends Component {
   };
 
   _starMessage = messageId => {
-    this.setState(prevState => {
-      const newMessages = prevState.messages.slice(0);
-      newMessages.filter(
-        newMessage => newMessage.id === messageId
-      )[0].starred = true;
-      return { messages: newMessages };
+    updateMessage(messageId, { starred: true }).then(() => {
+      this.setState(prevState => {
+        const newMessages = prevState.messages.slice(0);
+        newMessages.filter(
+          newMessage => newMessage.id === messageId
+        )[0].starred = true;
+        return { messages: newMessages };
+      });
     });
   };
 
+  // _starMessage = messageId => {
+  //     this.setState(prevState => {
+  //       const newMessages = prevState.messages.slice(0);
+  //       newMessages.filter(
+  //         newMessage => newMessage.id === messageId
+  //       )[0].starred = true;
+  //       return { messages: newMessages };
+  //     });
+  // };
+
   _unstarMessage = messageId => {
-    this.setState(prevState => {
-      const newMessages = prevState.messages.slice(0);
-      newMessages.filter(
-        newMessage => newMessage.id === messageId
-      )[0].starred = false;
-      return { messages: newMessages };
+    updateMessage(messageId, { starred: false }).then(() => {
+      this.setState(prevState => {
+        const newMessages = prevState.messages.slice(0);
+        newMessages.filter(
+          newMessage => newMessage.id === messageId
+        )[0].starred = false;
+        return { messages: newMessages };
+      });
     });
   };
 
@@ -169,12 +188,17 @@ class App extends Component {
           !newMessage.labels.includes(label)
         ) {
           newMessage.labels.push(label);
-
+          updateMessage(newMessage.id, {
+            labels: newMessage.labels.toString()
+          });
           return { messages: newMessages };
         }
       });
     });
   };
+  // if (labels.includes(label)) return
+  //       patchNewLabel(message, labels, label).then( () =>{
+  // this.setState(prevState => {
 
   _removeLabelSelectedMessages = label => {
     this.setState(prevState => {
@@ -185,6 +209,9 @@ class App extends Component {
           newMessage.labels.forEach(selectedLabel => {
             if (label === selectedLabel) {
               newMessage.labels.splice(newMessage.labels.indexOf(label), 1);
+              updateMessage(newMessage.id, {
+                labels: newMessage.labels.toString()
+              });
               return { messages: newMessages };
             }
           });
@@ -197,10 +224,10 @@ class App extends Component {
     this.setState(prevState => {
       const newMessages = prevState.messages.slice(0);
       let newShowComposeForm = prevState.showComposeForm;
-      let newSelectedMessageIds = prevState.selectedMessageIds;
       let newMessage1 = {
         id: 0,
         subject: subject,
+        body: body,
         read: false,
         starred: false,
         labels: ['new']
@@ -210,15 +237,10 @@ class App extends Component {
       } else {
         newMessage1.id = 1;
       }
-
-      if (newSelectedMessageIds.includes(newMessage1.id)) {
-        newSelectedMessageIds.splice(
-          newSelectedMessageIds.indexOf(newMessage1.id),
-          1
-        );
-      }
       newMessages.push(newMessage1);
       //console.log(newMessages);
+      createMessage(newMessage1);
+      getMessages().then(records => this.setState({ messages: records }));
       newShowComposeForm = false;
       return { showComposeForm: newShowComposeForm, messages: newMessages };
     });
@@ -264,6 +286,7 @@ class App extends Component {
       newMessages.forEach(newMessage => {
         if (newSelectedMessageIds.includes(newMessage.id)) {
           newMessage.read = true;
+          updateMessage(newMessage.id, { read: true });
         }
       });
       return { messages: newMessages };
@@ -277,6 +300,7 @@ class App extends Component {
       newMessages.forEach(newMessage => {
         if (newSelectedMessageIds.includes(newMessage.id)) {
           newMessage.read = false;
+          updateMessage(newMessage.id, { read: false });
         }
       });
       return { messages: newMessages };
@@ -289,11 +313,13 @@ class App extends Component {
       let newSelectedMessageIds = prevState.selectedMessageIds.slice(0);
       for (let i = 0; i < newMessages.length; i++) {
         if (newSelectedMessageIds.includes(newMessages[i].id)) {
+          deleteMessage(newMessages[i].id);
           newMessages.splice(i, 1);
           i = i - 1;
         }
       }
       newSelectedMessageIds = [];
+
       return {
         messages: newMessages,
         selectedMessageIds: newSelectedMessageIds
