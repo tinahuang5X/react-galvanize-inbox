@@ -240,8 +240,12 @@ class App extends Component {
       newMessages.push(newMessage1);
       //console.log(newMessages);
       createMessage(newMessage1);
-      getMessages().then(records => this.setState({ messages: records }));
+
       newShowComposeForm = false;
+      setTimeout(
+        getMessages().then(records => this.setState({ messages: records })),
+        5000
+      );
       return { showComposeForm: newShowComposeForm, messages: newMessages };
     });
   };
