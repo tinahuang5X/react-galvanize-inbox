@@ -126,30 +126,42 @@ class App extends Component {
 
   _applyLabelSelectedMessages = label => {
     this.state.selectedMessageIds.forEach(messageId => {
-      updateMessage(messageId, { labels: label }).then(messages => {
-        this.setState(prevState => {
-          const newMessages = prevState.messages.slice(0);
-          let newSelectedMessageIds = prevState.selectedMessageIds.slice(0);
-          newMessages.forEach(newMessage => {
-            if (
-              newSelectedMessageIds.includes(newMessage.id) &&
-              !newMessage.labels.includes(label)
-            ) {
-              newMessage.labels.push(label);
-              // updateMessage(newMessage.id, {
-              //   labels: newMessage.labels.toString()
-              // });
-              return { messages: newMessages };
-            }
-          });
-        });
+      this.state.messages.forEach(message => {
+        if (messageId === message.id) {
+          if (message.labels.includes(label)) {
+          } else {
+            let labelArray = message.labels;
+            labelArray.push(label);
+            let newLabels = labelArray.join(',');
+            updateMessage(messageId, { labels: newLabels }).then(messages => {
+              this.setState(prevState => {
+                const newMessages = prevState.messages.slice(0);
+                let newSelectedMessageIds = prevState.selectedMessageIds.slice(
+                  0
+                );
+                newMessages.forEach(newMessage => {
+                  if (
+                    newSelectedMessageIds.includes(newMessage.id) &&
+                    !newMessage.labels.includes(label)
+                  ) {
+                    newMessage.labels.push(label);
+                    // updateMessage(newMessage.id, {
+                    //   labels: newMessage.labels.toString()
+                    // });
+                    return { messages: newMessages };
+                  }
+                });
+              });
+            });
+          }
+        }
       });
     });
   };
 
   _removeLabelSelectedMessages = label => {
-    this.state.selectedMessageIds.forEach(messageId => {
-      updateMessage(messageId, { labels: label }).then(messages => {
+    this.state.messages.forEach(message => {
+      updateMessage(message.id, { labels: label }).then(messages => {
         this.setState(prevState => {
           const newMessages = prevState.messages.slice(0);
           let newSelectedMessageIds = prevState.selectedMessageIds.slice(0);

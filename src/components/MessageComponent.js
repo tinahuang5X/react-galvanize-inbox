@@ -23,7 +23,7 @@ export default function MessageComponent({
   const readClass = message.read ? 'read' : 'unread';
   const selectedClass = selected ? 'selected' : '';
   const starClass = message.starred ? 'star fa fa-star' : 'star fa fa-star-o';
-  let click = false;
+  //let click = false;
   function handleSelect(event) {
     //event.preventDefault();
     selected ? onDeselectMessage(message.id) : onSelectMessage(message.id);
@@ -32,8 +32,8 @@ export default function MessageComponent({
   function handleStar(event) {
     event.preventDefault();
     message.starred ? onUnstarMessage(message.id) : onStarMessage(message.id);
-    click = true;
-    console.log(click);
+    //click = true;
+    //console.log(click);
   }
 
   function handleRead(event) {
@@ -55,11 +55,17 @@ export default function MessageComponent({
           <div className="col-xs-2">
             <i className={starClass} onClick={handleStar} />
           </div>
-          {click === true ? <p> Pleae wait one second. </p> : null}
+          {/* {`${click}`}
+          {click === true ? <p> Pleae wait one second. </p> : null} */}
         </div>
       </div>
       <div className="col-xs-11 text-left">
         {renderLabels(message.labels)}
+        {/* {message.labels.map((label, labelIndex) =>
+          <span className="label label-warning" key={labelIndex}>
+            {label}
+          </span>
+        )} */}
         <a href="." onClick={handleRead}>
           {message.subject || 'no subject'}
         </a>
