@@ -13,20 +13,22 @@ export default function MessagesComponent({
 }) {
   return (
     <div className="MessagesComponent">
-      {messages.map(message =>
-        <MessageComponent
-          key={message.id}
-          selected={
-            selectedMessageIds.indexOf(message.id) !== -1 ? true : false
-          }
-          message={message}
-          onMarkAsReadMessage={onMarkAsReadMessage}
-          onSelectMessage={onSelectMessage}
-          onDeselectMessage={onDeselectMessage}
-          onStarMessage={onStarMessage}
-          onUnstarMessage={onUnstarMessage}
-        />
-      )}
+      {messages.length === 0 && <h5>'LOADING... PLEASE WAIT'</h5>}
+      {messages.length > 0 &&
+        messages.map(message =>
+          <MessageComponent
+            key={message.id}
+            selected={
+              selectedMessageIds.indexOf(message.id) !== -1 ? true : false
+            }
+            message={message}
+            onMarkAsReadMessage={onMarkAsReadMessage}
+            onSelectMessage={onSelectMessage}
+            onDeselectMessage={onDeselectMessage}
+            onStarMessage={onStarMessage}
+            onUnstarMessage={onUnstarMessage}
+          />
+        )}
     </div>
   );
 }
