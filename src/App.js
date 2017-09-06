@@ -160,25 +160,41 @@ class App extends Component {
   };
 
   _removeLabelSelectedMessages = label => {
-    this.state.messages.forEach(message => {
-      updateMessage(message.id, { labels: label }).then(messages => {
-        this.setState(prevState => {
-          const newMessages = prevState.messages.slice(0);
-          let newSelectedMessageIds = prevState.selectedMessageIds.slice(0);
-          newMessages.forEach(newMessage => {
-            if (newSelectedMessageIds.includes(newMessage.id)) {
-              newMessage.labels.forEach(selectedLabel => {
-                if (label === selectedLabel) {
-                  newMessage.labels.splice(newMessage.labels.indexOf(label), 1);
-                  // updateMessage(newMessage.id, {
-                  //   labels: newMessage.labels.toString()
-                  // });
-                  return { messages: newMessages };
-                }
+    this.state.selectedMessageIds.forEach(messageId => {
+      this.state.messages.forEach(message => {
+        if (messageId === message.id) {
+          if (message.labels.includes(label)) {
+            let labelArray = message.labels;
+            labelArray.splice(labelArray.indexOf(label), 1);
+            let newLabels = labelArray.join(',');
+            updateMessage(message.id, {
+              labels: newLabels
+            }).then(messages => {
+              this.setState(prevState => {
+                const newMessages = prevState.messages.slice(0);
+                let newSelectedMessageIds = prevState.selectedMessageIds.slice(
+                  0
+                );
+                newMessages.forEach(newMessage => {
+                  if (newSelectedMessageIds.includes(newMessage.id)) {
+                    newMessage.labels.forEach(newSelectedLabel => {
+                      if (label === newSelectedLabel) {
+                        newMessage.labels.splice(
+                          newMessage.labels.indexOf(label),
+                          1
+                        );
+                        // updateMessage(newMessage.id, {
+                        //   labels: newMessage.labels.toString()
+                        // });
+                        return { messages: newMessages };
+                      }
+                    });
+                  }
+                });
               });
-            }
-          });
-        });
+            });
+          }
+        }
       });
     });
   };
