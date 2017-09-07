@@ -33,7 +33,7 @@ export default function ToolBarComponent({
     event.preventDefault();
     console.log('this function is running');
     console.log('selectedCount', selectedMsgCount);
-    if (selectedMsgCount > 0 && selectedMsgCount < totalMsgCount) {
+    if (selectedMsgCount >= 0 && selectedMsgCount < totalMsgCount) {
       onSelectAllMessages();
       console.log(selectedMsgCount, totalMsgCount);
       // selectedMsgCount = totalMsgCount;
