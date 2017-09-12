@@ -47,6 +47,7 @@ export default function MessageComponent({
         <div className="row">
           <div className="col-xs-2">
             <input
+              className="checkSelected"
               type="checkbox"
               checked={selected === true}
               onChange={handleSelect}
@@ -66,7 +67,7 @@ export default function MessageComponent({
             {label}
           </span>
         )} */}
-        <a href="." onClick={handleRead}>
+        <a href="." className="checkSubject" onClick={handleRead}>
           {message.subject || 'no subject'}
         </a>
       </div>
