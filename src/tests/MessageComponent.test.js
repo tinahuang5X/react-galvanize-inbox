@@ -122,7 +122,7 @@ describe('a unit test for MessageComponent', () => {
         onSelectMessage={onSelectMessage}
       />
     )
-      .find('.checkSelected')
+      .find('input')
       .simulate('click');
     expect(onSelectMessage).toHaveBeenCalled();
   });
