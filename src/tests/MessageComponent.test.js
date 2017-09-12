@@ -96,11 +96,15 @@ describe('a unit test for MessageComponent', () => {
     if (message.star) expect(shallowWrapper.find('.star')).toHaveLength(1);
     else expect(shallowWrapper.find('.star')).toHaveLength(1);
   });
-  it('should be checked when the message was selected', () => {
-    if (selected) expect(shallowWrapper.find('.checkSelected').toBe(true));
-    else expect(shallowWrapper.find('.checkSelected').toBe(false));
+
+  it('checkbox is checked when the selected prop is true', () => {
+    if (selected)
+      expect(shallowWrapper.find('.checkSelected').prop('checked')).toBe(true);
+    else
+      expect(shallowWrapper.find('checkSelected').prop('checked')).toBe(false);
   });
-  it('onMarkAsReadMessage is triggered when the subject line is clicked', () => {
+
+  it('onMarkAsReadMessage callback is triggered when the subject line is clicked', () => {
     const onMarkAsReadMessage = jest.fn();
     mount(
       <MessageComponent
@@ -113,18 +117,23 @@ describe('a unit test for MessageComponent', () => {
       .simulate('click');
     expect(onMarkAsReadMessage).toHaveBeenCalled();
   });
-  it('onSelectMessage callback is triggered when the checkbox is checked', () => {
+
+  it('onSelectMessage callback is triggered when the checkbox is checked - and Vice Versa', () => {
     const onSelectMessage = jest.fn();
+    const onDeselectMessage = jest.fn();
     mount(
       <MessageComponent
         message={message}
         selected={selected}
         onSelectMessage={onSelectMessage}
+        onDeselectMessage={onDeselectMessage}
       />
     )
-      .find('input')
+      .find('.checkSelected')
       .simulate('click');
-    expect(onSelectMessage).toHaveBeenCalled();
+
+    if (selected) expect(onDeselectMessage).toHaveBeenCalled();
+    else expect(onSelectMessage).toHaveBeenCalled();
   });
 
   it('tests children elements with full rendering', () => {
