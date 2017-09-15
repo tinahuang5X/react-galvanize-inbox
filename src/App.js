@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 //import logo from './logo.svg';
+import env from './env';
 import './App.css';
 import InboxPage from './components/InboxPage';
 import getMessages from './api/getMessages';
@@ -12,14 +13,22 @@ import deleteMessage from './api/deleteMessage';
 //putItIntoDom(element);
 //app.componentDidMount();
 
-class App extends Component {
+export default class App extends Component {
   //experimental syntax
-  state = {
-    messages: [],
-    selectedMessageIds: [],
-    showComposeForm: false,
-    showApiError: false
-  };
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      messages: [],
+      selectedMessageIds: [],
+      showComposeForm: false,
+      showApiError: false
+    };
+
+    this.props.store.subscribe(() => {
+      this.setState(this.props.store.getState());
+    });
+  }
 
   render() {
     return (
@@ -49,36 +58,36 @@ class App extends Component {
   }
 
   componentDidMount() {
-    getMessages().then(records => this.setState({ messages: records }));
+    getMessages({
+      databaseId: env.AIRTABLE_DATABASE_ID,
+      token: env.AIRTABLE_TOKEN
+    }).then(messages => {
+      this.props.store.dispatch({ type: 'SET_MESSAGES', messages });
+    });
   }
 
   _markAsReadMessage = messageId => {
-    updateMessage(messageId, { read: true }).then(() => {
-      this.setState(prevState => {
-        const newMessages = prevState.messages.slice(0);
-        newMessages.filter(
-          newMessage => newMessage.id === messageId
-        )[0].read = true;
-        //updateMessage(messageId, { read: true });
-        return { messages: newMessages };
+    updateMessage(
+      messageId,
+      { read: true },
+      {
+        databaseId: env.AIRTABLE_DATABASE_ID,
+        token: env.AIRTABLE_TOKEN
+      }
+    ).then(updatedMessage => {
+      this.props.store.dispatch({
+        type: 'UPDATE_MESSAGE',
+        messsage: updatedMessage
       });
     });
   };
 
   _selectMessage = messageId => {
-    this.setState(prevState => {
-      const newSelectedMessageIds = prevState.selectedMessageIds.slice(0);
-      newSelectedMessageIds.push(messageId);
-      return { selectedMessageIds: newSelectedMessageIds };
-    });
+    this.props.store.dispatch({ type: 'SELECT_MESSAGE', messageId });
   };
 
   _deselectMessage = messageId => {
-    this.setState(prevState => {
-      const newSelectedMessageIds = prevState.selectedMessageIds.slice(0);
-      newSelectedMessageIds.splice(newSelectedMessageIds.indexOf(messageId), 1);
-      return { selectedMessageIds: newSelectedMessageIds };
-    });
+    this.props.store.dispatch({ type: 'DESELECT_MESSAGE', messageId });
   };
 
   // _starMessage = messageId => {
@@ -97,106 +106,84 @@ class App extends Component {
   //
 
   _starMessage = messageId => {
-    updateMessage(messageId, { starred: true })
-      .then(updatedMessage => {
-        this.setState(prevState => {
-          return {
-            messages: prevState.messages.map(
-              message => (message.id === messageId ? updatedMessage : message)
-            )
-          };
-        });
-      })
-      .catch(error => {
-        alert('ERROR MESSAGE');
+    updateMessage(
+      messageId,
+      { starred: true },
+      {
+        databaseId: env.AIRTABLE_DATABASE_ID,
+        token: env.AIRTABLE_TOKEN
+      }
+    ).then(updatedMessage => {
+      this.props.store.dispatch({
+        type: 'UPDATE_MESSAGE',
+        messsage: updatedMessage
       });
+    });
   };
 
   _unstarMessage = messageId => {
-    updateMessage(messageId, { starred: false }).then(() => {
-      this.setState(prevState => {
-        const newMessages = prevState.messages.slice(0);
-        newMessages.filter(
-          newMessage => newMessage.id === messageId
-        )[0].starred = false;
-        return { messages: newMessages };
+    updateMessage(
+      messageId,
+      { starred: false },
+      {
+        databaseId: env.AIRTABLE_DATABASE_ID,
+        token: env.AIRTABLE_TOKEN
+      }
+    ).then(updatedMessage => {
+      this.props.store.dispatch({
+        type: 'UPDATE_MESSAGE',
+        messsage: updatedMessage
       });
     });
   };
 
   _applyLabelSelectedMessages = label => {
-    this.state.selectedMessageIds.forEach(messageId => {
-      this.state.messages.forEach(message => {
-        if (messageId === message.id) {
-          if (message.labels.includes(label)) {
-          } else {
-            let labelArray = message.labels;
-            labelArray.push(label);
-            let newLabels = labelArray.join(',');
-            updateMessage(messageId, { labels: newLabels }).then(messages => {
-              this.setState(prevState => {
-                const newMessages = prevState.messages.slice(0);
-                let newSelectedMessageIds = prevState.selectedMessageIds.slice(
-                  0
-                );
-                newMessages.forEach(newMessage => {
-                  if (
-                    newSelectedMessageIds.includes(newMessage.id) &&
-                    !newMessage.labels.includes(label)
-                  ) {
-                    newMessage.labels.push(label);
-                    // updateMessage(newMessage.id, {
-                    //   labels: newMessage.labels.toString()
-                    // });
-                    return { messages: newMessages };
-                  }
+    this.props.store.getState(
+      this.state.selectedMessageIds.forEach(messageId => {
+        this.state.messages.forEach(message => {
+          if (messageId === message.id) {
+            if (message.labels.includes(label)) {
+            } else {
+              let labelArray = message.labels;
+              labelArray.push(label);
+              let newLabels = labelArray.join(',');
+              updateMessage(messageId, {
+                labels: newLabels
+              }).then(updatedMessage => {
+                this.props.store.dispatch({
+                  type: 'UPDATE_MESSAGE',
+                  message: updatedMessage
                 });
               });
-            });
+            }
           }
-        }
-      });
-    });
+        });
+      })
+    );
   };
 
   _removeLabelSelectedMessages = label => {
-    this.state.selectedMessageIds.forEach(messageId => {
-      this.state.messages.forEach(message => {
-        if (messageId === message.id) {
-          if (message.labels.includes(label)) {
-            let labelArray = message.labels;
-            labelArray.splice(labelArray.indexOf(label), 1);
-            let newLabels = labelArray.join(',');
-            updateMessage(message.id, {
-              labels: newLabels
-            }).then(messages => {
-              this.setState(prevState => {
-                const newMessages = prevState.messages.slice(0);
-                let newSelectedMessageIds = prevState.selectedMessageIds.slice(
-                  0
-                );
-                newMessages.forEach(newMessage => {
-                  if (newSelectedMessageIds.includes(newMessage.id)) {
-                    newMessage.labels.forEach(newSelectedLabel => {
-                      if (label === newSelectedLabel) {
-                        newMessage.labels.splice(
-                          newMessage.labels.indexOf(label),
-                          1
-                        );
-                        // updateMessage(newMessage.id, {
-                        //   labels: newMessage.labels.toString()
-                        // });
-                        return { messages: newMessages };
-                      }
-                    });
-                  }
+    this.props.store.getState(
+      this.state.selectedMessageIds.forEach(messageId => {
+        this.state.messages.forEach(message => {
+          if (messageId === message.id) {
+            if (message.labels.includes(label)) {
+              let labelArray = message.labels;
+              labelArray.splice(labelArray.indexOf(label), 1);
+              let newLabels = labelArray.join(',');
+              updateMessage(message.id, {
+                labels: newLabels
+              }).then(updatedMessage => {
+                this.props.store.dispatch({
+                  type: 'UPDATE_MESSAGE',
+                  message: updatedMessage
                 });
               });
-            });
+            }
           }
-        }
-      });
-    });
+        });
+      })
+    );
   };
 
   // _submit = (subject, body) => {
@@ -240,98 +227,72 @@ class App extends Component {
     };
 
     createMessage(newMessage).then(createdMsg => {
-      newMessage.id = createdMsg.id;
-      this.setState(prevState => {
-        let newMessages = prevState.messages.slice(0);
-        newMessages.push(newMessage);
-        return {
-          messages: newMessages,
-          showComposeForm: false
-        };
+      this.props.store.dispatch({
+        type: 'CREATE_MESSAGE',
+        message: createdMsg,
+        showComposeForm: false
       });
     });
   };
-
   _cancel = () => {
-    this.setState(prevState => {
-      let newShowComposeForm = prevState.showComposeForm;
-      newShowComposeForm = false;
-      return { showComposeForm: newShowComposeForm };
+    this.props.store.dispatch({
+      type: 'CANCEL',
+      showComposeForm: false
     });
   };
 
   _openComposeForm = () => {
-    this.setState(prevState => {
-      let newShowComposeForm = prevState.showComposeForm;
-      newShowComposeForm = !newShowComposeForm;
-      return { showComposeForm: newShowComposeForm };
+    this.props.store.dispatch({
+      type: 'OPEN_COMPOSE_FORM',
+      showComposeForm: true
     });
   };
 
   _selectAllMessages = () => {
-    this.setState(prevState => {
-      let newSelectedMessageIds = prevState.selectedMessageIds.slice(0);
-      const newMessages = prevState.messages.slice(0);
-      newSelectedMessageIds = newMessages.map(newMessage => newMessage.id);
-      return { selectedMessageIds: newSelectedMessageIds };
+    this.props.store.dispatch({
+      type: 'SELECT_ALL_MESSAGES'
     });
   };
 
   _deselectAllMessages = () => {
-    this.setState(prevState => {
-      let newSelectedMessageIds = prevState.selectedMessageIds.slice(0);
-      newSelectedMessageIds = [];
-      return { selectedMessageIds: newSelectedMessageIds };
+    this.props.store.dispatch({
+      type: 'DESELECT_ALL_MESSAGES'
     });
   };
 
   _markAsReadSelectedMessages = () => {
-    this.setState(prevState => {
-      const newMessages = prevState.messages.slice(0);
-      let newSelectedMessageIds = prevState.selectedMessageIds.slice(0);
-      newMessages.forEach(newMessage => {
-        if (newSelectedMessageIds.includes(newMessage.id)) {
-          newMessage.read = true;
-          updateMessage(newMessage.id, { read: true });
-        }
-      });
-      return { messages: newMessages };
-    });
+    this.props.store.getState(
+      this.state.selectedMessageIds.forEach(messageId =>
+        this._markAsReadMessage(messageId)
+      )
+    );
   };
 
   _markAsUnreadSelectedMessages = () => {
-    this.setState(prevState => {
-      const newMessages = prevState.messages.slice(0);
-      let newSelectedMessageIds = prevState.selectedMessageIds.slice(0);
-      newMessages.forEach(newMessage => {
-        if (newSelectedMessageIds.includes(newMessage.id)) {
-          newMessage.read = false;
-          updateMessage(newMessage.id, { read: false });
-        }
-      });
-      return { messages: newMessages };
-    });
+    this.props.store.getState(
+      this.state.selectedMessageIds.forEach(messageId => {
+        updateMessage(messageId, { read: false }).then(updatedMessage => {
+          this.props.store.dispatch({
+            type: 'UPDATE_MESSAGE',
+            messsage: updatedMessage
+          });
+        });
+      })
+    );
   };
 
   _deleteSelectedMessages = () => {
-    this.setState(prevState => {
-      let newMessages = prevState.messages.slice(0);
-      let newSelectedMessageIds = prevState.selectedMessageIds.slice(0);
-      for (let i = 0; i < newMessages.length; i++) {
-        if (newSelectedMessageIds.includes(newMessages[i].id)) {
-          deleteMessage(newMessages[i].id);
-          newMessages.splice(i, 1);
-          i = i - 1;
+    this.state.selectedMessageIds.forEach(messageId => {
+      this.state.messages.forEach(message => {
+        if (messageId === message.id) {
+          deleteMessage(messageId).then(wasDeleted => {
+            this.props.store.dispatch({
+              type: 'DELETE_MESSAGE',
+              messageId: message.id
+            });
+          });
         }
-      }
-      newSelectedMessageIds = [];
-
-      return {
-        messages: newMessages,
-        selectedMessageIds: newSelectedMessageIds
-      };
+      });
     });
   };
 }
-
-export default App;
