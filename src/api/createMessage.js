@@ -8,7 +8,6 @@ export default function createMessage(message) {
     },
     body: JSON.stringify({
       fields: {
-        //id: message.id,
         subject: message.subject,
         read: message.read,
         starred: message.starred,
@@ -20,12 +19,12 @@ export default function createMessage(message) {
     .then(response => response.json())
     .then(record => {
       return {
-        id: record.id
-        // body: record.fields.body,
-        // subject: record.fields.subject,
-        // read: record.fields.read,
-        // starred: record.fields.starred,
-        // labels: record.fields.labels ? record.fields.labels.split(',') : []
+        id: record.id,
+        body: record.fields.body,
+        subject: record.fields.subject,
+        read: record.fields.read,
+        starred: record.fields.starred,
+        labels: record.fields.labels ? record.fields.labels.split(',') : []
       };
     });
 }

@@ -11,10 +11,23 @@ export default function rootReducer(
     case 'SET_MESSAGES':
       return { ...currentState, messages: action.messages };
     case 'SELECT_MESSAGE':
-      return { ...currentState, selectedMessageIds: action.messageId };
+      return {
+        ...currentState,
+        selectedMessageIds: [
+          ...currentState.selectedMessageIds,
+          action.messageId
+        ]
+      };
     case 'DESELECT_MESSAGE':
-      return { ...currentState, selectedMessageIds: null };
+      return {
+        ...currentState,
+        selectedMessageIds: currentState.selectedMessageIds.filter(
+          selectedMessageId => selectedMessageId !== action.messageId
+        )
+      };
+
     case 'UPDATE_MESSAGE':
+      console.log(currentState.messages);
       return {
         ...currentState,
         messages: currentState.messages.map(
@@ -35,21 +48,21 @@ export default function rootReducer(
     case 'CREATE_MESSAGE':
       return {
         ...currentState,
-        selectedMessageId: action.message.id,
-        messages: [action.message, ...currentState.messages]
+        messages: [action.message, ...currentState.messages],
+        showComposeForm: action.showComposeForm
       };
     case 'DELETE_MESSAGE':
       return {
         ...currentState,
         selectedMessageId: null,
-        notes: currentState.messages.filter(
+        messages: currentState.messages.filter(
           message => message.id !== action.messageId
         )
       };
     case 'OPEN_COMPOSE_FORM':
       return {
         ...currentState,
-        showComposeForm: action.showComposeForm
+        showComposeForm: !currentState.showComposeForm
       };
     case 'CANCEL':
       return {

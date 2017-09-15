@@ -14,7 +14,6 @@ import deleteMessage from './api/deleteMessage';
 //app.componentDidMount();
 
 export default class App extends Component {
-  //experimental syntax
   constructor(props) {
     super(props);
 
@@ -58,10 +57,12 @@ export default class App extends Component {
   }
 
   componentDidMount() {
-    getMessages({
-      databaseId: env.AIRTABLE_DATABASE_ID,
-      token: env.AIRTABLE_TOKEN
-    }).then(messages => {
+    getMessages(
+      {
+        // databaseId: env.AIRTABLE_DATABASE_ID,
+        // token: env.AIRTABLE_TOKEN
+      }
+    ).then(messages => {
       this.props.store.dispatch({ type: 'SET_MESSAGES', messages });
     });
   }
@@ -69,15 +70,15 @@ export default class App extends Component {
   _markAsReadMessage = messageId => {
     updateMessage(
       messageId,
-      { read: true },
-      {
-        databaseId: env.AIRTABLE_DATABASE_ID,
-        token: env.AIRTABLE_TOKEN
-      }
+      { read: true }
+      // {
+      //   databaseId: env.AIRTABLE_DATABASE_ID,
+      //   token: env.AIRTABLE_TOKEN
+      // }
     ).then(updatedMessage => {
       this.props.store.dispatch({
         type: 'UPDATE_MESSAGE',
-        messsage: updatedMessage
+        message: updatedMessage
       });
     });
   };
@@ -116,7 +117,7 @@ export default class App extends Component {
     ).then(updatedMessage => {
       this.props.store.dispatch({
         type: 'UPDATE_MESSAGE',
-        messsage: updatedMessage
+        message: updatedMessage
       });
     });
   };
@@ -132,7 +133,7 @@ export default class App extends Component {
     ).then(updatedMessage => {
       this.props.store.dispatch({
         type: 'UPDATE_MESSAGE',
-        messsage: updatedMessage
+        message: updatedMessage
       });
     });
   };
@@ -218,7 +219,6 @@ export default class App extends Component {
 
   _submit = (subject, body) => {
     let newMessage = {
-      id: 0,
       subject: subject,
       read: false,
       starred: false,
@@ -243,8 +243,7 @@ export default class App extends Component {
 
   _openComposeForm = () => {
     this.props.store.dispatch({
-      type: 'OPEN_COMPOSE_FORM',
-      showComposeForm: true
+      type: 'OPEN_COMPOSE_FORM'
     });
   };
 
@@ -260,7 +259,9 @@ export default class App extends Component {
     });
   };
 
+  //UPDATE_MESSAGE
   _markAsReadSelectedMessages = () => {
+    console.log('scarf');
     this.props.store.getState(
       this.state.selectedMessageIds.forEach(messageId =>
         this._markAsReadMessage(messageId)
@@ -269,29 +270,25 @@ export default class App extends Component {
   };
 
   _markAsUnreadSelectedMessages = () => {
-    this.props.store.getState(
-      this.state.selectedMessageIds.forEach(messageId => {
-        updateMessage(messageId, { read: false }).then(updatedMessage => {
-          this.props.store.dispatch({
-            type: 'UPDATE_MESSAGE',
-            messsage: updatedMessage
-          });
+    console.log('hat');
+    this.state.selectedMessageIds.forEach(messageId => {
+      updateMessage(messageId, { read: false }).then(updatedMessage => {
+        console.log(updatedMessage);
+        this.props.store.dispatch({
+          type: 'UPDATE_MESSAGE',
+          message: updatedMessage
         });
-      })
-    );
+      });
+    });
   };
 
   _deleteSelectedMessages = () => {
     this.state.selectedMessageIds.forEach(messageId => {
-      this.state.messages.forEach(message => {
-        if (messageId === message.id) {
-          deleteMessage(messageId).then(wasDeleted => {
-            this.props.store.dispatch({
-              type: 'DELETE_MESSAGE',
-              messageId: message.id
-            });
-          });
-        }
+      deleteMessage(messageId).then(wasDeleted => {
+        this.props.store.dispatch({
+          type: 'DELETE_MESSAGE',
+          messageId: messageId
+        });
       });
     });
   };

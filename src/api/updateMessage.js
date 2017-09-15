@@ -1,4 +1,4 @@
-export default function updateMessages(messageId, change) {
+export default function updateMessage(messageId, change) {
   console.log(messageId, change);
   return fetch(
     `https://api.airtable.com/v0/appi0rdar7mItbQ9X/messages/${messageId}`,
