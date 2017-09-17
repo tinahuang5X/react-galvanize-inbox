@@ -139,52 +139,48 @@ export default class App extends Component {
   };
 
   _applyLabelSelectedMessages = label => {
-    this.props.store.getState(
-      this.state.selectedMessageIds.forEach(messageId => {
-        this.state.messages.forEach(message => {
-          if (messageId === message.id) {
-            if (message.labels.includes(label)) {
-            } else {
-              let labelArray = message.labels;
-              labelArray.push(label);
-              let newLabels = labelArray.join(',');
-              updateMessage(messageId, {
-                labels: newLabels
-              }).then(updatedMessage => {
-                this.props.store.dispatch({
-                  type: 'UPDATE_MESSAGE',
-                  message: updatedMessage
-                });
+    this.state.selectedMessageIds.forEach(messageId => {
+      this.state.messages.forEach(message => {
+        if (messageId === message.id) {
+          if (message.labels.includes(label)) {
+          } else {
+            let labelArray = message.labels;
+            labelArray.push(label);
+            let newLabels = labelArray.join(',');
+            updateMessage(messageId, {
+              labels: newLabels
+            }).then(updatedMessage => {
+              this.props.store.dispatch({
+                type: 'UPDATE_MESSAGE',
+                message: updatedMessage
               });
-            }
+            });
           }
-        });
-      })
-    );
+        }
+      });
+    });
   };
 
   _removeLabelSelectedMessages = label => {
-    this.props.store.getState(
-      this.state.selectedMessageIds.forEach(messageId => {
-        this.state.messages.forEach(message => {
-          if (messageId === message.id) {
-            if (message.labels.includes(label)) {
-              let labelArray = message.labels;
-              labelArray.splice(labelArray.indexOf(label), 1);
-              let newLabels = labelArray.join(',');
-              updateMessage(message.id, {
-                labels: newLabels
-              }).then(updatedMessage => {
-                this.props.store.dispatch({
-                  type: 'UPDATE_MESSAGE',
-                  message: updatedMessage
-                });
+    this.state.selectedMessageIds.forEach(messageId => {
+      this.state.messages.forEach(message => {
+        if (messageId === message.id) {
+          if (message.labels.includes(label)) {
+            let labelArray = message.labels;
+            labelArray.splice(labelArray.indexOf(label), 1);
+            let newLabels = labelArray.join(',');
+            updateMessage(message.id, {
+              labels: newLabels
+            }).then(updatedMessage => {
+              this.props.store.dispatch({
+                type: 'UPDATE_MESSAGE',
+                message: updatedMessage
               });
-            }
+            });
           }
-        });
-      })
-    );
+        }
+      });
+    });
   };
 
   // _submit = (subject, body) => {
@@ -259,13 +255,9 @@ export default class App extends Component {
     });
   };
 
-  //UPDATE_MESSAGE
   _markAsReadSelectedMessages = () => {
-    console.log('scarf');
-    this.props.store.getState(
-      this.state.selectedMessageIds.forEach(messageId =>
-        this._markAsReadMessage(messageId)
-      )
+    this.state.selectedMessageIds.forEach(messageId =>
+      this._markAsReadMessage(messageId)
     );
   };
 
