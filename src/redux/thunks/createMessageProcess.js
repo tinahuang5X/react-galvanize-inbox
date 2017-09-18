@@ -1,4 +1,4 @@
-import createMessage from '../.././api/createMessage';
+import createMessage from '../../api/createMessage';
 
 export default function createMessageProcess(composedMessage) {
   return (dispatch, getState) => {

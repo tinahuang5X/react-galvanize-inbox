@@ -1,4 +1,4 @@
-import updateMessage from '../.././api/updateMessage';
+import updateMessage from '../../api/updateMessage';
 
 export default function updateMessageProcess(messageId, change) {
   return (dispatch, getState) => {

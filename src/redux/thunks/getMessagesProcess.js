@@ -1,4 +1,4 @@
-import getMessages from '../.././api/getMessages';
+import getMessages from '../../api/getMessages';
 
 export default function getMessagesProcess() {
   return (dispatch, getState) => {

@@ -1,4 +1,4 @@
-import deleteMessage from '../.././api/deleteMessage';
+import deleteMessage from '../../api/deleteMessage';
 
 export default function deleteMessageProcess(messageId) {
   return (dispatch, getState) => {
