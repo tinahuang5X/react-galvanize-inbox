@@ -2,6 +2,7 @@ import React from 'react';
 //import './index.css';
 
 export default function ToolBarComponent({
+  selectedMessageIds,
   messages,
   selectedMsgCount,
   onOpenComposeForm,
@@ -44,31 +45,39 @@ export default function ToolBarComponent({
 
   function handleMarkAsRead(event) {
     event.preventDefault();
-    onMarkAsReadSelectedMessages();
+    onMarkAsReadSelectedMessages(selectedMessageIds);
   }
 
   function handleMarkAsUnread(event) {
     event.preventDefault();
-    onMarkAsUnreadSelectedMessages();
+    onMarkAsUnreadSelectedMessages(selectedMessageIds);
   }
 
   function handleApplyLabel(event) {
     event.preventDefault();
     if (event.target.value !== 'Apply label')
-      onApplyLabelSelectedMessages(event.target.value);
+      onApplyLabelSelectedMessages(
+        event.target.value,
+        selectedMessageIds,
+        messages
+      );
     event.target.value = 'Apply label';
   }
 
   function handleRemoveLabel(event) {
     event.preventDefault();
     if (event.target.value !== 'Remove label')
-      onRemoveLabelSelectedMessages(event.target.value);
+      onRemoveLabelSelectedMessages(
+        event.target.value,
+        selectedMessageIds,
+        messages
+      );
     event.target.value = 'Remove label';
   }
 
   function handleDeleteSelected(event) {
     event.preventDefault();
-    onDeleteSelectedMessages();
+    onDeleteSelectedMessages(selectedMessageIds);
   }
 
   return (

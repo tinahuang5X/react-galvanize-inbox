@@ -31,6 +31,7 @@ export default function InboxPage({
         <ToolBarComponent
           messages={messages}
           selectedMsgCount={selectedMessageIds && selectedMessageIds.length}
+          selectedMessageIds={selectedMessageIds}
           onOpenComposeForm={onOpenComposeForm}
           onSelectAllMessages={onSelectAllMessages}
           onDeselectAllMessages={onDeselectAllMessages}

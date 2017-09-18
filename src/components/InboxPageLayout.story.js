@@ -77,6 +77,7 @@ storiesOf('OrderPageLayout', module)
       <ToolBarComponent
         messages={messages}
         selectedMessageCount={selectedMessageIds.length}
+        selectedMessageIds={selectedMessageIds}
       />
 
       {showComposeForm && <ComposeFormComponent />}
@@ -92,6 +93,7 @@ storiesOf('OrderPageLayout', module)
       <ToolBarComponent
         messages={messages}
         selectedMessageCount={selectedMessageIds.length}
+        selectedMessageIds={selectedMessageIds}
       />
 
       {showComposeForm === false && <ComposeFormComponent />}
