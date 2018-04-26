@@ -37,11 +37,11 @@ Testing: Jest, Enzyme <br /><br />
 
 ## Compose New Message
 
-Click the red button to compose new message.
+Click the red button to compose a new message.
 
 ![compose](screenshots/ComposeMessage.png) <br /><br />
 
-New message (Yelp - North Bay) successfully added to the list.
+The new message (Yelp - North Bay) was successfully added to the list.
 
 ![compose](screenshots/ComposeMessageDone.png) <br /><br />
 
