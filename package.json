@@ -15,7 +15,7 @@
     "randomatic": "^3.1.1",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
-    "react-scripts": "^2.0.4"
+    "react-scripts": "^5.0.1"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -25,6 +25,6 @@
     "storybook": "start-storybook -p 9001 -c .storybook"
   },
   "devDependencies": {
-    "@storybook/react": "^3.4.11"
+    "@storybook/react": "^6.5.13"
   }
 }
